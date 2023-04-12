@@ -24,6 +24,7 @@ import sys
 import time
 import re
 import json
+import subprocess
 from progress.bar import IncrementalBar
 
 #Variables:
@@ -31,8 +32,8 @@ api_get_keys = 'https://sshservice.cscs.ch/api/v1/auth/ssh-keys/signed-key'
 
 #Methods:
 def get_user_credentials():
-    user = input("Username: ")
-    pwd = getpass.getpass()
+    user = "vogtha"
+    pwd = subprocess.check_output(["pass", "show", "account.cscs.ch/vogtha"]).decode("utf-8").strip()
     otp = getpass.getpass("Enter OTP (6-digit code):")
     if not (re.match('^\d{6}$', otp)):
        sys.exit("Error: OTP must be a 6-digit code.")
@@ -88,7 +89,14 @@ def save_keys(public,private):
     except Exception as ex:
         sys.exit('Error: cannot change permissions of the private key.', ex)
 
+def activate_key():
+    try:
+        subprocess.run(["ssh-add", "-t", "1d", "/home/vogtha/ssh/cscs-key"], check=True)
+    except Exception as ex:
+        sys.exit('Error: cannot add key to SSH agent.')
+
 def set_passphrase():
+    return False
     user_input = input('Do you want to add a passphrase to your key? [y/n] (Default y) \n')
 
     yes_choices = ['yes', 'y']
@@ -113,6 +121,9 @@ def main():
     bar.next()
     time.sleep(1)
     save_keys(public, private)
+    bar.next()
+    time.sleep(1)
+    activate_key()
     bar.next()
     time.sleep(1)
     bar.finish()
