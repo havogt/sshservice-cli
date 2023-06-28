@@ -91,7 +91,7 @@ def save_keys(public,private):
 
 def activate_key():
     try:
-        subprocess.run(["ssh-add", "-t", "1d", "/home/vogtha/ssh/cscs-key"], check=True)
+        subprocess.run(["ssh-add", "-t", "1d", "/home/vogtha/.ssh/cscs-key"], check=True)
     except Exception as ex:
         sys.exit('Error: cannot add key to SSH agent.')
 
