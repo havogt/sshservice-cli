@@ -1,5 +1,5 @@
 #!/bin/sh
 path=/home/vogtha/mfa
-source $path/bin/activate
+source $path/.venv/bin/activate
 python3 $path/sshservice-cli/cscs-keygen.py
 
